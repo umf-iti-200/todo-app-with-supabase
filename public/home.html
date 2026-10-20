@@ -1,0 +1,23 @@
+<html>
+    <head>
+        <title>Home</title>
+    </head>
+    <body>
+        <h1>Home</h1>
+
+        <form action="/save" method="POST">
+            <div>
+                <label for="name">Name</label>
+                <input type="name" id="name" name="name" required />
+            </div>
+            <button type="submit">Add</button>
+        </form>
+
+        <h2>Items</h2>
+
+        <ul id="items"></ul>
+
+        <p><a href="/logout">Logout</a></p>
+        <script src="js/home.js"></script>
+    </body>
+</html>
