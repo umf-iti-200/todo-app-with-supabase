@@ -4,7 +4,7 @@ function createItem(item) {
 
     const li = document.createElement("li");
 
-    li.textContent = item;
+    li.textContent = item.name;
 
     return li;
 }

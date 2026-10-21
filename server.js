@@ -2,7 +2,7 @@ require('dotenv').config()
 
 const express = require("express");
 
-const {createClient} = require("./supabase.js");
+const createClient = require("./supabase.js");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -21,6 +21,14 @@ app.get("/login", async (req, res) => {
 });
 
 app.get("/logout", async (req, res) => {
+
+    const supabase = createClient({ req, res })
+
+    const { data, error } = await supabase.auth.signOut();
+
+    console.log(data);
+    console.error(error);
+
     return res.redirect("login.html");
 });
 
@@ -31,34 +39,55 @@ app.get("/sign-up", async (req, res) => {
 
 app.get("/items", async (req, res) => {
 
-    return res.json(items);
+    const supabase = createClient({ req, res })
+
+    const { data, error } = await supabase.from('items').select('*');
+
+    // console.log(data);
+
+    return res.json(data);
 });
 
 app.post("/sign-up", async (req, res) => {
 
-    const data = req.body;
+    const payload = {
+        email: req.body.email,
+        password: req.body.password,
+        options: {
+            data: {
+                display_name: req.body.name,
+            }
+        }
+    }
 
-    console.log(data)
+    const supabase = createClient({ req, res })
+
+    const { data, error } = await supabase.auth.signUp(payload);
 
     return res.redirect("home.html");
 });
 
 app.post("/login", async (req, res) => {
 
-    const data = req.body;
+    const payload = {
+        email: req.body.email,
+        password: req.body.password,
+    }
 
-    console.log(data)
+    const supabase = createClient({ req, res })
+
+    const { data, error } = await supabase.auth.signInWithPassword(payload);
 
     return res.redirect("home.html");
 });
 
 app.post("/save", async (req, res) => {
 
-    const data = req.body;
+    const name = req.body.name;
 
-    const name = data.name;
+    const supabase = createClient({ req, res })
 
-    items.push(name);
+    const { data, error } = await supabase.from('items').insert({ name });
 
     return res.redirect("home.html");
 });
